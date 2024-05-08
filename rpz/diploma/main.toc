@@ -1,0 +1,36 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{ВВЕДЕНИЕ}{6}{table.caption.1}%
+\contentsline {section}{\numberline {1}Аналитическая часть}{8}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Критерии классификации методов отображения интерфейса}{8}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Методы отображения интерфейса в frontend--разработке}{8}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}React}{10}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Vue.js}{11}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Angular}{13}{subsubsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.3}Методы отображения интерфейса в мобильной разработке}{14}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Кроссплатформенная разработка}{15}{subsubsection.1.3.1}%
+\contentsline {subparagraph}{Flutter}{15}{subparagraph*.2}%
+\contentsline {subparagraph}{}{15}{subparagraph*.3}%
+\contentsline {subparagraph}{React Native}{16}{subparagraph*.4}%
+\contentsline {subparagraph}{}{16}{subparagraph*.5}%
+\contentsline {subparagraph}{}{17}{subparagraph*.6}%
+\contentsline {subsubsection}{\numberline {1.3.2}Нативная разработка Android}{17}{subsubsection.1.3.2}%
+\contentsline {subparagraph}{Метод с использованием XML}{17}{subparagraph*.7}%
+\contentsline {subparagraph}{}{17}{subparagraph*.8}%
+\contentsline {subparagraph}{Jetpack Compose}{18}{subparagraph*.9}%
+\contentsline {subparagraph}{}{18}{subparagraph*.10}%
+\contentsline {subparagraph}{}{19}{subparagraph*.11}%
+\contentsline {subsubsection}{\numberline {1.3.3}Нативная разработка iOS}{19}{subsubsection.1.3.3}%
+\contentsline {subparagraph}{UIKit}{19}{subparagraph*.12}%
+\contentsline {subparagraph}{}{20}{subparagraph*.13}%
+\contentsline {subparagraph}{SwiftUI}{20}{subparagraph*.14}%
+\contentsline {subparagraph}{}{20}{subparagraph*.15}%
+\contentsline {subsection}{\numberline {1.4}Результаты анализа}{22}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Постановка задачи}{22}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.6}Вывод из аналитического раздела}{24}{subsection.1.6}%
+\contentsline {section}{\numberline {2}Конструкторская часть}{25}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Требования и ограничения к разрабатываемому методу}{25}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Требования к разрабатываемому программному обеспечению}{25}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Основные этапы разрабатываемого метода}{26}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Схемы алгоритмов}{26}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Вывод}{27}{subsection.2.5}%
+\contentsline {section}{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}{28}{subsection.2.5}%
