@@ -1,21 +1,19 @@
-import UIKit
+// bachelors-diploma-poliorang
 
-protocol ViewLayouting: UIViewController {
-    func reload()
-}
+import UIKit
 
 class ReloadManager {
     private static var observersWeak = [ObserverWeak]()
 
     private struct ObserverWeak {
-        weak var observer: ViewLayouting?
+        weak var observer: LayoutInTimeViewController?
     }
 
-    static var observers: [ViewLayouting] {
+    static var observers: [LayoutInTimeViewController] {
         return observersWeak.compactMap { $0.observer }
     }
 
-    static func addObserver(_ observer: ViewLayouting) {
+    static func addObserver(_ observer: LayoutInTimeViewController) {
         var alreadyRegistered = false
         observersWeak = observersWeak.filter {
             guard let o = $0.observer else { return false }
@@ -31,8 +29,8 @@ class ReloadManager {
 
             if !UIResponder.handlerInstalled {
 
-                print("install")
-                overrideMethod(#selector(getter: UIResponder.keyCommands), 
+                Logger.log(message: "Observer installed")
+                overrideMethod(#selector(getter: UIResponder.keyCommands),
                                of: UIResponder.self,
                                with: #selector(UIResponder.layoutItTimeKeyCommands)
                 )
@@ -66,7 +64,7 @@ class ReloadManager {
         }
 
         @objc private func reloadInTime() {
-            print("reload1")
+            Logger.log(message: "Reload start")
             ReloadManager.reload()
         }
     }
