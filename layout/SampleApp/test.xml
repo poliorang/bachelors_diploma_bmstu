@@ -1,21 +1,34 @@
 <UIView
-    width="150"
-    height="150"
-    topAnchor="50"
-    leftAnchor="50"
+    width="100%"
+    height="100%"
     backgroundColor="white">
     <UIView
-        width="150"
-        height="150"
+        width="50%"
+        height="50%"
+        rightAnchor="-50"
         topAnchor="50"
-        leftAnchor="50"
-        backgroundColor="white">
-        <UIView
-            width="150"
-            height="150"
-            topAnchor="50"
-            leftAnchor="50"
-            backgroundColor="white">
-        </UIView>
+        backgroundColor="brown">
+    </UIView>
+    <UIView
+        width="50"
+        height="50"
+        rightAnchor="-50"
+        topAnchor="50"
+        backgroundColor="blue">
     </UIView>
 </UIView>
+<UIView
+    width="50%"
+    height="50%"
+    leftAnchor="50"
+    topAnchor="50"
+    backgroundColor="green">
+    <UIView
+        width="50"
+        height="50"
+        rightAnchor="-50"
+        bottomAnchor="-50"
+        backgroundColor="red">
+    </UIView>
+</UIView>
+

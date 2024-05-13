@@ -8,7 +8,6 @@ class ViewController: LayoutInTimeViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .gray
         ReloadManager.addObserver(self)
         filePath = xmlPath(xmlName: xmlName)
 

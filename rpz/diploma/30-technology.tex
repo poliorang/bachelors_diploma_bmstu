@@ -1,158 +1,502 @@
 \section{Технологическая часть}
 
-В данном разделе описываются средства разработки программного обеспечения и требования к нему. Приводится структура разрабо­танного ПО.
+В данном разделе будет обоснован выбор средств программной реализации предлагаемого метода, описан формат входных и выходных данных. 
+Разработано программное обеспечение, реализующее представленный метод, и выполнено его тестирование.
 
 \subsection{Выбор средств разработки}
 
+\subsubsection{Выбор платформы}
+По результатам анализа только исследуемые методы отображения интерфейса нативной мобильной разработки не обладают функцией горячей перезагрузки. 
+В связи с чем в качестве платформы разработки для реализации предлагаемого метода выбрана операционная система iOS.
+
 \subsubsection{Выбор языка программирования}
+Выбран язык Swift, поскольку он является основным используемым в нативной разработке iOS.
 
-Ядро ОС Linux написано на языке программирования C \cite{C89} с использованием стандарта C89/C90. Встроенный драйвер ядра Linux, zram, так же написан на языке программирования С. Программное обеспечение представляет из себя модификацию модуля ядра zram, в связи с чем для реализации программного обеспечения был выбран язык программирования C версии стандарта C89. В модуле ядра zram, как и в ядре Linux, используется процедурный подход к программированию. Язык C поддерживает процедурную парадигму программирования.
+\subsubsection{Выбор среды разработки и сборка программного обеспечения}
+Среда разработки --- XCode, поскольку является интегрированной средой разработки программного обеспечения для платформ macOS, iOS, watchOS и tvOS, разработанной корпорацией Apple, а также предоставляет возможность запуска разрабатываемого программного обеспечения на симуляторах устройств. 
+Используется версия XCode 15.3, являющаяся актуальной на момент написания дипломной работы.
+Запуск разрабатываемого программного обеспечения происходит на симуляторе устройства iPhone 15 Pro Max, версия iOS --- 17.4 (также является актуальной на момент написания дипломной работы).
 
-\subsubsection{Версия ядра Linux}
+\subsubsection{Используемые расширения}
+Для создания представлений используется библиотека UIKit, содержащая полный набор базовых UI--элементов, а также механизмы размещения их на экране. 
 
-В качестве версии ядра Linux была выбрана версия 5.17.5. На момент написания дипломной работы, эта версия является самой актуальной версией ядра Linux. Данный факт позволяет использовать все возможности ядра при разработке программного обеспечения. 
+\subsubsection{Выбор методов и средств тестирования}
+Разработанное программное обеспечение должно корректно отображать задаваемые UI--элементы.
+Для этого необходимо провести snapshot--тесты --- тесты, которые делают эталонный скриншот экрана и сравнивают с актуальным скриншотом, который получается во время прогона тестов.
+Для выполнения тестирования будет использована библиотека SnapshotTesting, предоставляющая весь необходимый для созрания snapshot--тестов функционал.
 
-\subsection{Сборка программного обеспечения}
+\subsection{Формат входных и выходных данных}
+Входные данные для разрабатываемого метода:
 
-Разработанное программное обеспечение является часть ядра Linux. Для сборки проекта используется специальная утилита make \cite{make}, позволяющая автоматизировать сборку ядра. make является кроссплатформенной системой автоматизации сборки программного обеспечения из исходного кода. make позволяет существенно ускорить процесс сборки проекта. Так, например, при изменении одного исходного файла проекта, заново будет собран в объектный файл лишь этот исходный файл, а не все файлы проекта.
-
-Для сборки и включения модуля zram в итоговый образ ядра Linux, в конфигурационном файле ядра необходимо включить опции, указанные в листинге \ref{code:defconfig}. Ниже приведено детальное описание включаемых опций:
-
-\begin{itemize}
-	\item \texttt{CONFIG\_ZRAM} -- опция, включающая поддержку модуля zram в итоговый образ ядра Linux. Без этой опции, использовать zram будет невозможно;
-	\item \texttt{CONFIG\_ZRAM\_DEF\_COMP\_ZSTD} и \texttt{CONFIG\_ZRAM\_DEF\_COMP="zstd"} -- выбрать алгоритм сжатия, который будет использоваться при сжатии страниц оперативной памяти. В данном случае, выбран алгоритм сжатия zstd;
-	\item \texttt{CONFIG\_ZRAM\_ENTROPY} -- эта опция включает поддержку энтропийной оптимизации модуля zram.
-	\item \texttt{CONFIG\_ZRAM\_ENTROPY\_THRESHOLD=100000} -- данный параметр задает границу для отсекаемых страниц. Страницы, энтропия которых выше данного значения, будут храниться не в сжатом виде. Данное значение для каждого алгоритма сжатия выбирается оптимальным образом автоматически, но, при этом, имеется возможность установить его в ручную.
+\begin{itemize}[label=---]
+	\item пользовательский интерфейс;
+	\item событие, инициализирующее изменения интерфейса;
+	\item XML--файл, организованный специальным образом.
 \end{itemize}
-Разработанное программное обеспечение представлено в виде опции. Эту опцию можно выключать и отключать на стадии сборки ядра.
 
-\begin{code}
-	\captionof{listing}{Опции, которые необходимо добавить в конфигурационный файл ядра}
-	\label{code:defconfig}
-	\inputminted
-	[
-	frame=single,
-	framerule=0.5pt,
-	framesep=20pt,
-	fontsize=\small,
-	tabsize=4,
-	linenos,
-	numbersep=5pt,
-	xleftmargin=10pt,
-	]
-	{text}
-	{code/defconfig}
-\end{code}
+Выходные данные для разрабатываемого метода:
 
-\subsection{Требования к вычислительной системе}
+\begin{itemize}[label=---]
+	\item пользовательский интерфейс, измененный во время выполнения программы.
+\end{itemize}
 
-Разработанное программное обеспечение представляет из себя модификацию ядра Linux. Для сборки и установки ядра в систему требуются следующие библиотеки и утилиты, представленные в таблице 1.
+\subsection{Детали реализации предлагаемого метода}
 
-\begin{table}[!htb]
-	\label{table:dependencies}
-	\begin{center}
-		\caption{Таблица ПО, необходимого для сборки и установки ядра}
-		\begin{tabular}{|c|c|}
-			\hline
-			\bfseries ПО & \bfseries Минимальная версия \\
-			\hline
-			gcc & 3.2 \\ \hline
-			GNU make & 3.80 \\ \hline
-			binutils & 2.12 \\ \hline
-			util-linux & 2.10o \\ \hline
-			module-init-tools & 0.9.10 \\ \hline
-			e2fsprogs & 1.41.4 \\ \hline
-			jfsutils & 1.1.3 \\ \hline
-			reiserfsprogs & 3.6.3 \\ \hline
-			xfsprogs & 2.6.0 \\ \hline
-			squashfs-tools & 4.0 \\ \hline
-			btrfs-progs & 0.18 \\ \hline
-			pcmciautils & 004 \\ \hline
-			quota-tools & 3.09 \\ \hline
-			PPP & 2.4.0 \\ \hline
-			isdn4k-utils & 3.1pre1 \\ \hline
-			nfs-utils & 1.0.5 \\ \hline
-			procps & 3.2.0 \\ \hline
-			oprofile & 0.9 \\ \hline
-			udev & 081 \\ \hline
-			grub & 0.93 \\ \hline
-			mcelog & 0.6 \\ \hline
-			iptables & 1.4.2 \\ \hline
-			openssl, libcrypto & 1.0.0 \\ \hline
-			bc & 1.2 \\ \hline
-		\end{tabular}
-	\end{center}
-\end{table}
+В листинге 2 представлен класс, обеспечивающий перезагрузку по время выполнения. 
 
-\subsection{Структура программного обеспечения}
+\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
 
-Разработанное ПО представляет из себя функцию вычисления информационной энтропии, её вызов перед попыткой сжатия страницы и сравнение с пороговым значением. Ниже описывается эта функция и модификация функции, в которой происходит её вызов и принятие решение о дальнейшем хранении страницы памяти.
+class ReloadManager {
+    private static var observersWeak = [ObserverWeak]()
 
-\subsubsection{Функция вычисления информационной энтропии}
+    private struct ObserverWeak {
+        weak var observer: LayoutInTimeViewController?
+    }
 
-Функция shannon\_entropy в качестве единственного входного параметра получает указатель на массив байт размером PAGE\_SIZE. Возвращает информационную энтропию, подсчитанную по формуле \ref{eq:shannon_entropy}, для данного набора байт.
+    static var observers: [LayoutInTimeViewController] {
+        return observersWeak.compactMap { $0.observer }
+    }
 
-Для вычисления логарифма используется встроенная функция ядра ilog2. В ядре Linux нет поддержки чисел с плавающей запятой, поэтому функция ilog2 работает только с целыми числами. Передаваемый параметр в функцию ilog2 ($p_{i}$) возводится в 4 степень для увлечения точности вычислений.
+    static func addObserver(_ observer: LayoutInTimeViewController) {
+        var alreadyRegistered = false
+        observersWeak = observersWeak.filter {
+            guard let o = $0.observer else { return false }
+            if o === observer { alreadyRegistered = true }
+            return true
+        }
+        if alreadyRegistered {
+            return
+        }
+        observersWeak.append(ObserverWeak(observer: observer))
 
-Пример реализации функции shannon\_entropy() для модуля zram представлен в листинге \ref{code:shannon_entropy}.
+        #if arch(arm64) || arch(x86_64)
 
-\newpage
+            if !UIResponder.handlerInstalled {
+                overrideMethod(#selector(getter: UIResponder.keyCommands),
+                               of: UIResponder.self,
+                               with: #selector(UIResponder.layoutItTimeKeyCommands)
+                )
+                UIResponder.handlerInstalled = true
+            }
 
-\begin{code}
-	\captionof{listing}{Функция shannon\_entropy()}
-	\label{code:shannon_entropy}
-	\inputminted
-	[
-	frame=single,
-	framerule=0.5pt,
-	framesep=20pt,
-	fontsize=\small,
-	tabsize=4,
-	linenos,
-	numbersep=5pt,
-	xleftmargin=10pt,
-	]
-	{text}
-	{code/shannon_entropy.c}
-\end{code}
+        #endif
+    }
 
-\subsubsection{Принятие решение о дальнейшем хранении страницы}
+    static func reload() {
+        for observer in observers {
+            observer.reload()
+        }
+    }
+}
+\end{lstlisting}
 
-Сжатие страницы происходит в функции zcomp\_compress(), которая, в свою очередь вызывается в функции \_\_zram\_bvec\_write(). Вызов функции\\ shannon\_entropy() необходимо произвести до сжатия данных, хранящихся на странице памяти, поэтому функция \_\_zram\_bvec\_write() была модифицирована. 
+Реализации класса использует функцию, представленную в листинге 3, которая определяет список событию, по свершению которых происходит перезагрузка, а также метод, представленный в листинге 4, переопределяющий функцию обработки нажатия горящих клавиш. 
 
-Перед вызовом zcomp\_compress() для каждой попавшей в эту функцию страницы считается информационная энтропия. Если вычисленное значение выше порогового значения CONFIG\_ZRAM\_ENTROPY\_THRESHOLD, объявленного с помощью директивы \#define, то эта страница помечается как несжимаемая в памяти. В обратном случае, происходит вызов zcomp\_compress() и данные, находящиеся на этой странице памяти, сжимаются. 
+\begin{lstlisting}[caption={Функция определения списка событий, по свершению которых происходит перезагрузка}]
+#if arch(arm64) || arch(x86_64)
+    private extension UIResponder {
+        static var handlerInstalled = false
 
-Пример реализации модификации функции \_\_zram\_bvec\_write() модуля zram представлен в листинге \ref{code:call_shannon_entropy}.
+        @objc func layoutItTimeKeyCommands() -> [UIKeyCommand]? {
 
-\begin{code}
-	\captionof{listing}{Функция \_\_zram\_bvec\_write()}
-	\label{code:call_shannon_entropy}
-	\inputminted
-	[
-	frame=single,
-	framerule=0.5pt,
-	framesep=20pt,
-	fontsize=\small,
-	tabsize=4,
-	linenos,
-	numbersep=5pt,
-	xleftmargin=10pt,
-	]
-	{text}
-	{code/shannon_entropy_call.c}
-\end{code}
+            return (layoutItTimeKeyCommands() ?? []) + [
+                UIKeyCommand(
+                    input: "t",
+                    modifierFlags: .command,
+                    action: #selector(reloadInTime)
+                ),
+            ]
+        }
 
-\subsection{Руководство пользователя}
+        @objc private func reloadInTime() {
+            ReloadManager.reload()
+        }
+    }
+#endif
+\end{lstlisting}
 
-Для запуска разработанного ПО необходимо запущенное ядро Linux, собранное с опциями указанными в главе 3.3. Список включенных опций на уже запущенном ядре Linux можно узнать с помощью команды zcat /proc/config.gz/.
+\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
+func overrideMethod(_ selectorA: Selector, of sourceClass: AnyClass, with selectorB: Selector) {
+    let newMethod = class_getInstanceMethod(sourceClass, selectorB)!
+    let oldMethod = class_getInstanceMethod(sourceClass, selectorA)!
+    let inheritedImplementation = class_getInstanceMethod(class_getSuperclass(sourceClass), selectorA)
+        .map(method_getImplementation)
+    if method_getImplementation(oldMethod) == inheritedImplementation {
+        let types = method_getTypeEncoding(oldMethod)
+        class_addMethod(sourceClass, selectorA, method_getImplementation(newMethod), types)
+        return
+    }
+    method_exchangeImplementations(oldMethod, newMethod)
+}
+\end{lstlisting}
 
-Собрать ядро Linux из исходных файлов можно с помощью команды make -j\$(nproc). До сборки необходимо убедиться, что в конфигурационном файле, имеющем имя .config и находящемся в корне проекта, включены опции указанные в главе 3.2. Для того чтобы загрузчик мог использовать собранный образ ядра, необходимо установить его с помощью команд  make modules\_install и make install.
+Для того, чтобы добавить экран ---  контроллер --- в список обновляемых элементов, необходимо в методе ViewDidLoad его жизненного цикла добавить вызов функции addObserver класса перезагрузки ReloadManager. 
+Вызов представлен в листинге 5.
 
-Для того чтобы инициализировать и задать размер блочного устройства zram необходимо использовать команду: echo 512M > /sys/block/zram0/disksize. В данном примере размер устройства равен 512 мегабайтам. Задавать размер, превышающий размер ОЗУ более чем в 2 раза не имеет смысла: в среднем коэффициент сжатия равен двум \cite{zram}.
 
-Для того чтобы установить блочное устройство zram в качестве устройства, которое будет использовать в подкачке страниц, необходимо использовать следующие команды: mkswap /dev/zram0 и swapon /dev/zram0.
+\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
+ReloadManager.addObserver(self)
+\end{lstlisting}
 
-\subsection{Вывод}
+В листинге 6 представлены перечисления и структуры, определяющие список базовых UI--элементов, их свойства и атрибуты.
 
-В данном разделе были описаны средства разработки программного обеспечения и требования к ПО. Была приведена структура разработанного ПО.
+\begin{lstlisting}[caption={Перечисления и структуры, определяющие список базовых UI--элементов, их свойства и атрибуты}]
+enum ComponentType {
+    case uiView
+    case uiLabel
+    case uiButton
+
+    var startTag: String {
+        switch self {
+        case .uiView:
+            return "UIView"
+        case .uiLabel:
+            return "UILabel"
+        case .uiButton:
+            return "UIButton"
+        }
+    }
+
+    var endTag: String {
+        switch self {
+        case .uiView:
+            return "/UIView"
+        case .uiLabel:
+            return "/UILabel"
+        case .uiButton:
+            return "/UIButton"
+        }
+    }
+}
+
+struct Anchors {
+    public var topAnchorConstant: CGFloat?
+    public var bottomAnchorConstant: CGFloat?
+    public var leftAnchorConstant: CGFloat?
+    public var rightAnchorConstant: CGFloat?
+    public var height: CGFloat?
+    public var width: CGFloat?
+}
+
+enum ComponentPropertyType {
+    case width
+    case height
+    case topAnchor
+    case bottomAnchor
+    case leftAnchor
+    case rightAnchor
+    case backgroundColor
+    case textAlignment
+    case text
+
+    var value: String {
+        switch self {
+        case .width:
+            "width"
+        case .height:
+            "height"
+        case .topAnchor:
+            "topAnchor"
+        case .bottomAnchor:
+            "bottomAnchor"
+        case .leftAnchor:
+            "leftAnchor"
+        case .rightAnchor:
+            "rightAnchor"
+        case .backgroundColor:
+            "backgroundColor"
+        case .textAlignment:
+            "textAlignment"
+        case .text:
+            "text"
+        }
+    }
+}
+\end{lstlisting}
+
+В листинге 7 представлены функции класса, преобразующего содержимое XML--файла в UI--элементы.
+
+\begin{lstlisting}[caption={Функция определения списка событий, по свершению которых происходит перезагрузка}]
+class LayoutInTime {
+    public func createLayout(rootView: UIView, from xml: String) {
+        guard let clearContent = parseXMLElements(xmlContent: xml) else {
+            return
+        }
+        let separatedClearContent = clearContent.components(separatedBy: "\n")
+        let joinedClearContent = separatedClearContent.joined(separator: "=")
+        let components = joinedClearContent.components(separatedBy: "=")
+
+        print(components)
+        _ = createView(rootView: rootView, from: components)
+    }
+
+    private func createView(rootView: UIView, from components: [String]) -> Int {
+        var i = 0
+        var finalTagIndex = 0
+        while i < components.count {
+            switch components[i] {
+            case ComponentType.uiView.startTag:
+                var j = i + 1
+                var uiView = UIView().autolayout()
+                var anchors = Anchors()
+                while components[j] != ComponentType.uiView.endTag {
+                    switch components[j] {
+                    case ComponentType.uiView.startTag,
+                        ComponentType.uiLabel.startTag,
+                        ComponentType.uiButton.startTag:
+                        j += createView(rootView: uiView, from: Array(components[j..<components.count]))
+
+                    case ComponentPropertyType.width.value:
+                        incrementIndex(index: &j)
+                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
+                    case ComponentPropertyType.height.value:
+                        incrementIndex(index: &j)
+                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
+
+                    case ComponentPropertyType.topAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.bottomAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.leftAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.rightAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
+
+                    case ComponentPropertyType.backgroundColor.value:
+                        incrementIndex(index: &j)
+                        uiView = setBackgroundColor(component: uiView, property: components[j])
+
+                    default:
+                        continue
+                    }
+                    incrementIndex(index: &j)
+                }
+                finalTagIndex = j
+                rootView.addSubview(uiView)
+                setAnchors(rootView: rootView, childView: uiView, anchors: anchors)
+                incrementIndexByIndex(indexI: &i, by: j)
+
+            case ComponentType.uiLabel.startTag:
+                var j = i + 1
+                var uiLabel = UILabel().autolayout()
+                var anchors = Anchors()
+                while components[j] != ComponentType.uiLabel.endTag {
+                    print(components[j])
+                    switch components[j] {
+                    case ComponentType.uiView.startTag,
+                        ComponentType.uiLabel.startTag,
+                        ComponentType.uiButton.startTag:
+                        j += createView(rootView: uiLabel, from: Array(components[j..<components.count]))
+
+                    case ComponentPropertyType.width.value:
+                        incrementIndex(index: &j)
+                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
+                    case ComponentPropertyType.height.value:
+                        incrementIndex(index: &j)
+                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
+
+                    case ComponentPropertyType.topAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.bottomAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.leftAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.rightAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
+
+                    case ComponentPropertyType.backgroundColor.value:
+                        incrementIndex(index: &j)
+                        uiLabel = setBackgroundColor(component: uiLabel, property: components[j]) as! UILabel
+
+                    case ComponentPropertyType.textAlignment.value:
+                        incrementIndex(index: &j)
+                        setTextAligment(component: &uiLabel, property: components[j])
+                    case ComponentPropertyType.text.value:
+                        incrementIndex(index: &j)
+                        uiLabel.text = components[j]
+
+                    default:
+                        continue
+                    }
+                    incrementIndex(index: &j)
+                }
+                finalTagIndex = j
+                rootView.addSubview(uiLabel)
+                setAnchors(rootView: rootView, childView: uiLabel, anchors: anchors)
+                incrementIndexByIndex(indexI: &i, by: j)
+
+            case ComponentType.uiButton.startTag:
+                var j = i + 1
+                var uiButton = UIButton().autolayout()
+                var anchors = Anchors()
+                while components[j] != ComponentType.uiButton.endTag {
+                    switch components[j] {
+                    case ComponentType.uiView.startTag,
+                        ComponentType.uiLabel.startTag,
+                        ComponentType.uiButton.startTag:
+                        j += createView(rootView: uiButton, from: Array(components[j..<components.count]))
+
+                    case ComponentPropertyType.width.value:
+                        incrementIndex(index: &j)
+                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
+                    case ComponentPropertyType.height.value:
+                        incrementIndex(index: &j)
+                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
+
+                    case ComponentPropertyType.topAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.bottomAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.leftAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
+                    case ComponentPropertyType.rightAnchor.value:
+                        incrementIndex(index: &j)
+                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
+
+                    case ComponentPropertyType.backgroundColor.value:
+                        incrementIndex(index: &j)
+                        uiButton = setBackgroundColor(component: uiButton, property: components[j]) as! UIButton
+
+                    default:
+                        continue
+                    }
+                    incrementIndex(index: &j)
+                }
+                finalTagIndex = j
+                rootView.addSubview(uiButton)
+                setAnchors(rootView: rootView, childView: uiButton, anchors: anchors)
+                incrementIndexByIndex(indexI: &i, by: j)
+            default:
+                incrementIndex(index: &i)
+            }
+        }
+        return finalTagIndex
+    }
+
+    private func incrementIndex(index: inout Int) {
+        index += 1
+    }
+
+    private func incrementIndexByIndex(indexI: inout Int, by indexJ: Int) {
+        indexI = indexJ + 1
+    }
+
+    private func createBaseView() -> UIView {
+        UIView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: UIScreen.main.bounds.width,
+            height: UIScreen.main.bounds.height)
+        )
+    }
+}
+
+extension LayoutInTime {
+    private func setTextAligment(component: inout UILabel, property: String) {
+        switch property {
+        case "left":
+            component.textAlignment = NSTextAlignment(rawValue: 0)!
+        case "center":
+            component.textAlignment = NSTextAlignment(rawValue: 1)!
+        case "right":
+            component.textAlignment = NSTextAlignment(rawValue: 2)!
+        default:
+            break
+        }
+    }
+
+    private func setBackgroundColor(component: UIView, property: String) -> UIView {
+        switch property {
+        case "white":
+            component.backgroundColor = .white
+        case "black":
+            component.backgroundColor = .black
+        case "green":
+            component.backgroundColor = .green
+        case "red":
+            component.backgroundColor = .red
+        case "blue":
+            component.backgroundColor = .blue
+        case "brown":
+            component.backgroundColor = .brown
+        case "cyan":
+            component.backgroundColor = .cyan
+        case "darkGray":
+            component.backgroundColor = .darkGray
+        case "gray":
+            component.backgroundColor = .gray
+        case "systemPink":
+            component.backgroundColor = .systemPink
+        case "yellow":
+            component.backgroundColor = .yellow
+        case "purple":
+            component.backgroundColor = .purple
+        case "orange":
+            component.backgroundColor = .orange
+        default:
+            break
+        }
+
+        return component
+    }
+
+    private func setWidthHeight(property: String, isHeight: Bool) -> CGFloat {
+        if property.contains("%") {
+            return CGFloat(Double(
+                property.replacingOccurrences(of: "%", with: "")
+            ) ?? 0) / 100.0 * (isHeight ? UIScreen.main.bounds.height : UIScreen.main.bounds.width)
+        }
+        return CGFloat(Double(property) ?? 0)
+    }
+
+    private func setAnchors(rootView: UIView, childView: UIView, anchors: Anchors) {
+        if let topAnchorConstant = anchors.topAnchorConstant {
+            NSLayoutConstraint.activate([
+                childView.topAnchor.constraint(equalTo: rootView.topAnchor, constant: topAnchorConstant)
+            ])
+        }
+        if let leftAnchorConstant = anchors.leftAnchorConstant {
+            NSLayoutConstraint.activate([
+                childView.leftAnchor.constraint(equalTo: rootView.leftAnchor, constant: leftAnchorConstant)
+            ])
+        }
+        if let bottomAnchorConstant = anchors.bottomAnchorConstant {
+            NSLayoutConstraint.activate([
+                childView.bottomAnchor.constraint(equalTo: rootView.bottomAnchor, constant: bottomAnchorConstant)
+            ])
+        }
+        if let rightAnchorConstant = anchors.rightAnchorConstant {
+            NSLayoutConstraint.activate([
+                childView.rightAnchor.constraint(equalTo: rootView.rightAnchor, constant: rightAnchorConstant)
+            ])
+        }
+        if let height = anchors.height {
+            NSLayoutConstraint.activate([
+                childView.heightAnchor.constraint(equalToConstant: height)
+            ])
+        }
+        if let width = anchors.width {
+            NSLayoutConstraint.activate([
+                childView.widthAnchor.constraint(equalToConstant: width)
+            ])
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection*{Вывод}
+
+В данном разделе был обоснован выбор средств программной реализации предлагаемого метода, описан формат входных и выходных данных, разработано программное обеспечение, реализующее представленный метод, и выполнено его тестирование.
+
 \pagebreak

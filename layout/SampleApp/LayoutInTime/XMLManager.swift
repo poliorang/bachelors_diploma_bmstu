@@ -1,8 +1,5 @@
 // bachelors-diploma-poliorang
 
-import Foundation
-
-
 func xmlPath(xmlName: String?) -> String? {
     guard let lastIndex = #file.lastIndex(of: "/") else { return nil }
 
@@ -17,7 +14,7 @@ func xmlPath(xmlName: String?) -> String? {
     return trimmedPath
 }
 
-func parseXMLElements(xmlContent: String?) -> NSString? {
+func parseXMLElements(xmlContent: String?) -> String? {
     guard let xmlContent = xmlContent,
           let clearString = xmlContent
         .replacingOccurrences(of: "Optional(", with: "")
@@ -25,7 +22,7 @@ func parseXMLElements(xmlContent: String?) -> NSString? {
         .replacingOccurrences(of: "<", with: "")
         .replacingOccurrences(of: ">", with: "")
         .replacingOccurrences(of: " ", with: "")
-        .replacingOccurrences(of: "\"", with: "") as NSString? else {
+        .replacingOccurrences(of: "\"", with: "") as String? else {
         return nil
     }
 

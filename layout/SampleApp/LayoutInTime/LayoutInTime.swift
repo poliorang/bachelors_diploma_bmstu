@@ -1,80 +1,6 @@
 // bachelors-diploma-poliorang
 
-import Foundation
 import UIKit
-
-enum ComponentType {
-    case uiView
-    case uiLabel
-    case uiButton
-
-    var startTag: String {
-        switch self {
-        case .uiView:
-            return "UIView"
-        case .uiLabel:
-            return "UILabel"
-        case .uiButton:
-            return "UIButton"
-        }
-    }
-
-    var endTag: String {
-        switch self {
-        case .uiView:
-            return "/UIView"
-        case .uiLabel:
-            return "/UILabel"
-        case .uiButton:
-            return "/UIButton"
-        }
-    }
-}
-
-struct Anchors {
-    public var topAnchorConstant: CGFloat?
-    public var bottomAnchorConstant: CGFloat?
-    public var leftAnchorConstant: CGFloat?
-    public var rightAnchorConstant: CGFloat?
-    public var height: CGFloat?
-    public var width: CGFloat?
-}
-
-enum ComponentPropertyType {
-    case width
-    case height
-    case topAnchor
-    case bottomAnchor
-    case leftAnchor
-    case rightAnchor
-    case backgroundColor
-    case textAlignment
-    case text
-
-    var value: String {
-        switch self {
-        case .width:
-            "width"
-        case .height:
-            "height"
-        case .topAnchor:
-            "topAnchor"
-        case .bottomAnchor:
-            "bottomAnchor"
-        case .leftAnchor:
-            "leftAnchor"
-        case .rightAnchor:
-            "rightAnchor"
-        case .backgroundColor:
-            "backgroundColor"
-        case .textAlignment:
-            "textAlignment"
-        case .text:
-            "text"
-        }
-
-    }
-}
 
 class LayoutInTime {
     public func createLayout(rootView: UIView, from xml: String) {
@@ -84,12 +10,14 @@ class LayoutInTime {
         let separatedClearContent = clearContent.components(separatedBy: "\n")
         let joinedClearContent = separatedClearContent.joined(separator: "=")
         let components = joinedClearContent.components(separatedBy: "=")
+        for i in 0..<components.count {
+            print(i, components[i])
+        }
 
-        print(components)
         _ = createView(rootView: rootView, from: components)
     }
 
-    private func createView(rootView: UIView, from components: [String]) -> Int {
+    private func createView(rootView: UIView, from components: [String], isChild: Bool = false) -> Int {
         var i = 0
         var finalTagIndex = 0
         while i < components.count {
@@ -100,13 +28,13 @@ class LayoutInTime {
                 var anchors = Anchors()
                 while components[j] != ComponentType.uiView.endTag {
                     switch components[j] {
-                    // если вложенный элемент
                     case ComponentType.uiView.startTag,
                         ComponentType.uiLabel.startTag,
                         ComponentType.uiButton.startTag:
-                        j += createView(rootView: uiView, from: Array(components[j..<components.count]))
-
-                    // остальные проперти
+                        j += createView(
+                            rootView: uiView,
+                            from: Array(components[j..<components.count]),
+                            isChild: true)
                     case ComponentPropertyType.width.value:
                         incrementIndex(index: &j)
                         anchors.width = setWidthHeight(property: components[j], isHeight: false)
@@ -140,6 +68,7 @@ class LayoutInTime {
                 rootView.addSubview(uiView)
                 setAnchors(rootView: rootView, childView: uiView, anchors: anchors)
                 incrementIndexByIndex(indexI: &i, by: j)
+                if isChild { return j }
 
             case ComponentType.uiLabel.startTag:
                 var j = i + 1
@@ -148,13 +77,11 @@ class LayoutInTime {
                 while components[j] != ComponentType.uiLabel.endTag {
                     print(components[j])
                     switch components[j] {
-                    // если вложенный элемент
                     case ComponentType.uiView.startTag,
                         ComponentType.uiLabel.startTag,
                         ComponentType.uiButton.startTag:
                         j += createView(rootView: uiLabel, from: Array(components[j..<components.count]))
 
-                    // остальные проперти
                     case ComponentPropertyType.width.value:
                         incrementIndex(index: &j)
                         anchors.width = setWidthHeight(property: components[j], isHeight: false)
@@ -195,6 +122,7 @@ class LayoutInTime {
                 rootView.addSubview(uiLabel)
                 setAnchors(rootView: rootView, childView: uiLabel, anchors: anchors)
                 incrementIndexByIndex(indexI: &i, by: j)
+                if isChild { return j }
 
             case ComponentType.uiButton.startTag:
                 var j = i + 1
@@ -202,13 +130,11 @@ class LayoutInTime {
                 var anchors = Anchors()
                 while components[j] != ComponentType.uiButton.endTag {
                     switch components[j] {
-                    // если вложенный элемент
                     case ComponentType.uiView.startTag,
                         ComponentType.uiLabel.startTag,
                         ComponentType.uiButton.startTag:
                         j += createView(rootView: uiButton, from: Array(components[j..<components.count]))
 
-                    // остальные проперти
                     case ComponentPropertyType.width.value:
                         incrementIndex(index: &j)
                         anchors.width = setWidthHeight(property: components[j], isHeight: false)
@@ -242,6 +168,8 @@ class LayoutInTime {
                 rootView.addSubview(uiButton)
                 setAnchors(rootView: rootView, childView: uiButton, anchors: anchors)
                 incrementIndexByIndex(indexI: &i, by: j)
+                if isChild { return j }
+
             default:
                 incrementIndex(index: &i)
             }
