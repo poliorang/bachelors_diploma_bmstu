@@ -38,6 +38,7 @@
 		011CE64C1F05338A0034771C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		011CE6511F05338A0034771C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		011CE6581F05343E0034771C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4A3B3FD42BF7F92800EBE1A5 /* res.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = res.txt; sourceTree = "<group>"; };
 		4A59B1332BECFF9600D5FD80 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4A59B1382BED00E500D5FD80 /* LayoutInTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutInTimeViewController.swift; sourceTree = "<group>"; };
 		4A59B13A2BED0C1F00D5FD80 /* XMLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLManager.swift; sourceTree = "<group>"; };
@@ -129,6 +130,7 @@
 				4A59B1382BED00E500D5FD80 /* LayoutInTimeViewController.swift */,
 				4A59B13A2BED0C1F00D5FD80 /* XMLManager.swift */,
 				4A59B1542BF0CD5D00D5FD80 /* Models.swift */,
+				4A3B3FD42BF7F92800EBE1A5 /* res.txt */,
 			);
 			path = LayoutInTime;
 			sourceTree = "<group>";
@@ -457,7 +459,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -484,7 +486,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;

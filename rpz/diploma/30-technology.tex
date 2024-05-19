@@ -1,7 +1,7 @@
 \section{Технологическая часть}
 
 В данном разделе будет обоснован выбор средств программной реализации предлагаемого метода, описан формат входных и выходных данных. 
-Разработано программное обеспечение, реализующее представленный метод, и выполнено его тестирование.
+Разработано программное обеспечение, реализующее представленный метод, приведен пример работы программы, выполнено тестирование, а также описан способ обращения к программе.
 
 \subsection{Выбор средств разработки}
 
@@ -10,20 +10,15 @@
 В связи с чем в качестве платформы разработки для реализации предлагаемого метода выбрана операционная система iOS.
 
 \subsubsection{Выбор языка программирования}
-Выбран язык Swift, поскольку он является основным используемым в нативной разработке iOS.
+Выбран язык Swift \cite{swift}, поскольку он является основным используемым в нативной разработке iOS.
 
 \subsubsection{Выбор среды разработки и сборка программного обеспечения}
-Среда разработки --- XCode, поскольку является интегрированной средой разработки программного обеспечения для платформ macOS, iOS, watchOS и tvOS, разработанной корпорацией Apple, а также предоставляет возможность запуска разрабатываемого программного обеспечения на симуляторах устройств. 
+Среда разработки --- XCode \cite{xcode}, поскольку является интегрированной средой разработки программного обеспечения для платформ macOS, iOS, watchOS и tvOS, разработанной корпорацией Apple, а также предоставляет возможность запуска разрабатываемого программного обеспечения на симуляторах устройств \cite{simulator}. 
 Используется версия XCode 15.3, являющаяся актуальной на момент написания дипломной работы.
 Запуск разрабатываемого программного обеспечения происходит на симуляторе устройства iPhone 15 Pro Max, версия iOS --- 17.4 (также является актуальной на момент написания дипломной работы).
 
 \subsubsection{Используемые расширения}
 Для создания представлений используется библиотека UIKit, содержащая полный набор базовых UI--элементов, а также механизмы размещения их на экране. 
-
-\subsubsection{Выбор методов и средств тестирования}
-Разработанное программное обеспечение должно корректно отображать задаваемые UI--элементы.
-Для этого необходимо провести snapshot--тесты --- тесты, которые делают эталонный скриншот экрана и сравнивают с актуальным скриншотом, который получается во время прогона тестов.
-Для выполнения тестирования будет использована библиотека SnapshotTesting, предоставляющая весь необходимый для созрания snapshot--тестов функционал.
 
 \subsection{Формат входных и выходных данных}
 Входные данные для разрабатываемого метода:
@@ -40,463 +35,190 @@
 	\item пользовательский интерфейс, измененный во время выполнения программы.
 \end{itemize}
 
-\subsection{Детали реализации предлагаемого метода}
+\subsection{Способ обращения к программе}
 
-В листинге 2 представлен класс, обеспечивающий перезагрузку по время выполнения. 
+Разработанная реализация метода представляет собой класс.
+Для использования методов класса необходимо разместить файлы с кодом разработанного метода рядом с файлами программы. 
+Для корректной работы приложения необходимо, чтобы каждый UIViewController, интерфейс которого будет реализован с помощью разработанного метода, был унаследован от класса, описанного в листинге 2. 
 
-\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
+\begin{lstlisting}[caption={Класс, от которого наследуется UIViewController}]
 
-class ReloadManager {
-    private static var observersWeak = [ObserverWeak]()
+class LayoutInTimeViewController: UIViewController {
+    let fileManager = FileManager.default
+    let layoutInTime = LayoutInTime()
+    var filePath: String?
 
-    private struct ObserverWeak {
-        weak var observer: LayoutInTimeViewController?
+    func reload() {
+        clearView(self.view)
+        layoutInTime.createLayout(rootView: self.view, from: xmlString)
     }
 
-    static var observers: [LayoutInTimeViewController] {
-        return observersWeak.compactMap { $0.observer }
-    }
-
-    static func addObserver(_ observer: LayoutInTimeViewController) {
-        var alreadyRegistered = false
-        observersWeak = observersWeak.filter {
-            guard let o = $0.observer else { return false }
-            if o === observer { alreadyRegistered = true }
-            return true
-        }
-        if alreadyRegistered {
-            return
-        }
-        observersWeak.append(ObserverWeak(observer: observer))
-
-        #if arch(arm64) || arch(x86_64)
-
-            if !UIResponder.handlerInstalled {
-                overrideMethod(#selector(getter: UIResponder.keyCommands),
-                               of: UIResponder.self,
-                               with: #selector(UIResponder.layoutItTimeKeyCommands)
-                )
-                UIResponder.handlerInstalled = true
-            }
-
-        #endif
-    }
-
-    static func reload() {
-        for observer in observers {
-            observer.reload()
+    private func clearView(_ view: UIView) {
+        for subview in view.subviews {
+            subview.removeFromSuperview()
         }
     }
 }
 \end{lstlisting}
 
-Реализации класса использует функцию, представленную в листинге 3, которая определяет список событию, по свершению которых происходит перезагрузка, а также метод, представленный в листинге 4, переопределяющий функцию обработки нажатия горящих клавиш. 
+Для обновления интерфейса необходимо вызвать метод reload в методе жизненного цикла ViewDidLoad.
 
-\begin{lstlisting}[caption={Функция определения списка событий, по свершению которых происходит перезагрузка}]
-#if arch(arm64) || arch(x86_64)
-    private extension UIResponder {
-        static var handlerInstalled = false
+Также необходимо, чтобы UIViewController был внесен в список наблюдаемых объектов. Для этого необходимо добавить в метод жизненного цикла ViewDidLoad строку, представленную в листинге 3.
 
-        @objc func layoutItTimeKeyCommands() -> [UIKeyCommand]? {
-
-            return (layoutItTimeKeyCommands() ?? []) + [
-                UIKeyCommand(
-                    input: "t",
-                    modifierFlags: .command,
-                    action: #selector(reloadInTime)
-                ),
-            ]
-        }
-
-        @objc private func reloadInTime() {
-            ReloadManager.reload()
-        }
-    }
-#endif
-\end{lstlisting}
-
-\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
-func overrideMethod(_ selectorA: Selector, of sourceClass: AnyClass, with selectorB: Selector) {
-    let newMethod = class_getInstanceMethod(sourceClass, selectorB)!
-    let oldMethod = class_getInstanceMethod(sourceClass, selectorA)!
-    let inheritedImplementation = class_getInstanceMethod(class_getSuperclass(sourceClass), selectorA)
-        .map(method_getImplementation)
-    if method_getImplementation(oldMethod) == inheritedImplementation {
-        let types = method_getTypeEncoding(oldMethod)
-        class_addMethod(sourceClass, selectorA, method_getImplementation(newMethod), types)
-        return
-    }
-    method_exchangeImplementations(oldMethod, newMethod)
-}
-\end{lstlisting}
-
-Для того, чтобы добавить экран ---  контроллер --- в список обновляемых элементов, необходимо в методе ViewDidLoad его жизненного цикла добавить вызов функции addObserver класса перезагрузки ReloadManager. 
-Вызов представлен в листинге 5.
-
-
-\begin{lstlisting}[caption={Класс, обеспечивающий перезагрузку по время выполнения}]
+\begin{lstlisting}[caption={Внесение UIViewController в список наблюдаемых объектов}]
 ReloadManager.addObserver(self)
 \end{lstlisting}
 
-В листинге 6 представлены перечисления и структуры, определяющие список базовых UI--элементов, их свойства и атрибуты.
+Далее часть интерфейса или полностью весь интерфейс может быть спроектирован путем создания разметки XML--файла, связанного с UIViewController.
 
-\begin{lstlisting}[caption={Перечисления и структуры, определяющие список базовых UI--элементов, их свойства и атрибуты}]
-enum ComponentType {
-    case uiView
-    case uiLabel
-    case uiButton
+\subsubsection{Пример работы}
 
-    var startTag: String {
-        switch self {
-        case .uiView:
-            return "UIView"
-        case .uiLabel:
-            return "UILabel"
-        case .uiButton:
-            return "UIButton"
-        }
-    }
+В качестве примера работы программного обеспечения был спроектирован интерфейс, содержащий фоновое представление белого цвета, на котором по центру располагается UILabel с текстом <<Привет!>>. 
+Скриншот представлен на рисунке \ref{fig:example-before}.
 
-    var endTag: String {
-        switch self {
-        case .uiView:
-            return "/UIView"
-        case .uiLabel:
-            return "/UILabel"
-        case .uiButton:
-            return "/UIButton"
-        }
-    }
-}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.1]{img/example-before.png}
+	\caption{Интерфейс до внесения изменений}
+	\label{fig:example-before}
+\end{figure}
 
-struct Anchors {
-    public var topAnchorConstant: CGFloat?
-    public var bottomAnchorConstant: CGFloat?
-    public var leftAnchorConstant: CGFloat?
-    public var rightAnchorConstant: CGFloat?
-    public var height: CGFloat?
-    public var width: CGFloat?
-}
+Данному интерфейсу соответствует разметка XML--файла, представленная в листинге 4. 
 
-enum ComponentPropertyType {
-    case width
-    case height
-    case topAnchor
-    case bottomAnchor
-    case leftAnchor
-    case rightAnchor
-    case backgroundColor
-    case textAlignment
-    case text
-
-    var value: String {
-        switch self {
-        case .width:
-            "width"
-        case .height:
-            "height"
-        case .topAnchor:
-            "topAnchor"
-        case .bottomAnchor:
-            "bottomAnchor"
-        case .leftAnchor:
-            "leftAnchor"
-        case .rightAnchor:
-            "rightAnchor"
-        case .backgroundColor:
-            "backgroundColor"
-        case .textAlignment:
-            "textAlignment"
-        case .text:
-            "text"
-        }
-    }
-}
+\begin{lstlisting}[caption={Разметка XML--файла после внесения изменений}]
+<UIView
+    width="100%"
+    height="100%"
+    backgroundColor="white">
+    <UILabel
+        width="100%"
+        height="50"
+        topAnchor="400"
+        leftAnchor="0"
+        text="Привет!"
+        textAlignment="center">
+    </UILabel>
+</UIView>
 \end{lstlisting}
 
-В листинге 7 представлены функции класса, преобразующего содержимое XML--файла в UI--элементы.
+Во время работы приложения в XML--файл вносятся изменения: на фоновое представление под UILabel добавляется UIView красного цвета, содержащая UILabel с текстом <<Hello!>>. Соответствующая разметка XML--файла представлена в листинге 5. 
 
-\begin{lstlisting}[caption={Функция определения списка событий, по свершению которых происходит перезагрузка}]
-class LayoutInTime {
-    public func createLayout(rootView: UIView, from xml: String) {
-        guard let clearContent = parseXMLElements(xmlContent: xml) else {
-            return
-        }
-        let separatedClearContent = clearContent.components(separatedBy: "\n")
-        let joinedClearContent = separatedClearContent.joined(separator: "=")
-        let components = joinedClearContent.components(separatedBy: "=")
-
-        print(components)
-        _ = createView(rootView: rootView, from: components)
-    }
-
-    private func createView(rootView: UIView, from components: [String]) -> Int {
-        var i = 0
-        var finalTagIndex = 0
-        while i < components.count {
-            switch components[i] {
-            case ComponentType.uiView.startTag:
-                var j = i + 1
-                var uiView = UIView().autolayout()
-                var anchors = Anchors()
-                while components[j] != ComponentType.uiView.endTag {
-                    switch components[j] {
-                    case ComponentType.uiView.startTag,
-                        ComponentType.uiLabel.startTag,
-                        ComponentType.uiButton.startTag:
-                        j += createView(rootView: uiView, from: Array(components[j..<components.count]))
-
-                    case ComponentPropertyType.width.value:
-                        incrementIndex(index: &j)
-                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
-                    case ComponentPropertyType.height.value:
-                        incrementIndex(index: &j)
-                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
-
-                    case ComponentPropertyType.topAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.bottomAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.leftAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.rightAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
-
-                    case ComponentPropertyType.backgroundColor.value:
-                        incrementIndex(index: &j)
-                        uiView = setBackgroundColor(component: uiView, property: components[j])
-
-                    default:
-                        continue
-                    }
-                    incrementIndex(index: &j)
-                }
-                finalTagIndex = j
-                rootView.addSubview(uiView)
-                setAnchors(rootView: rootView, childView: uiView, anchors: anchors)
-                incrementIndexByIndex(indexI: &i, by: j)
-
-            case ComponentType.uiLabel.startTag:
-                var j = i + 1
-                var uiLabel = UILabel().autolayout()
-                var anchors = Anchors()
-                while components[j] != ComponentType.uiLabel.endTag {
-                    print(components[j])
-                    switch components[j] {
-                    case ComponentType.uiView.startTag,
-                        ComponentType.uiLabel.startTag,
-                        ComponentType.uiButton.startTag:
-                        j += createView(rootView: uiLabel, from: Array(components[j..<components.count]))
-
-                    case ComponentPropertyType.width.value:
-                        incrementIndex(index: &j)
-                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
-                    case ComponentPropertyType.height.value:
-                        incrementIndex(index: &j)
-                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
-
-                    case ComponentPropertyType.topAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.bottomAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.leftAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.rightAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
-
-                    case ComponentPropertyType.backgroundColor.value:
-                        incrementIndex(index: &j)
-                        uiLabel = setBackgroundColor(component: uiLabel, property: components[j]) as! UILabel
-
-                    case ComponentPropertyType.textAlignment.value:
-                        incrementIndex(index: &j)
-                        setTextAligment(component: &uiLabel, property: components[j])
-                    case ComponentPropertyType.text.value:
-                        incrementIndex(index: &j)
-                        uiLabel.text = components[j]
-
-                    default:
-                        continue
-                    }
-                    incrementIndex(index: &j)
-                }
-                finalTagIndex = j
-                rootView.addSubview(uiLabel)
-                setAnchors(rootView: rootView, childView: uiLabel, anchors: anchors)
-                incrementIndexByIndex(indexI: &i, by: j)
-
-            case ComponentType.uiButton.startTag:
-                var j = i + 1
-                var uiButton = UIButton().autolayout()
-                var anchors = Anchors()
-                while components[j] != ComponentType.uiButton.endTag {
-                    switch components[j] {
-                    case ComponentType.uiView.startTag,
-                        ComponentType.uiLabel.startTag,
-                        ComponentType.uiButton.startTag:
-                        j += createView(rootView: uiButton, from: Array(components[j..<components.count]))
-
-                    case ComponentPropertyType.width.value:
-                        incrementIndex(index: &j)
-                        anchors.width = setWidthHeight(property: components[j], isHeight: false)
-                    case ComponentPropertyType.height.value:
-                        incrementIndex(index: &j)
-                        anchors.height = setWidthHeight(property: components[j], isHeight: true)
-
-                    case ComponentPropertyType.topAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.topAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.bottomAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.bottomAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.leftAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.leftAnchorConstant = Double(components[j]) ?? 0.0
-                    case ComponentPropertyType.rightAnchor.value:
-                        incrementIndex(index: &j)
-                        anchors.rightAnchorConstant = Double(components[j]) ?? 0.0
-
-                    case ComponentPropertyType.backgroundColor.value:
-                        incrementIndex(index: &j)
-                        uiButton = setBackgroundColor(component: uiButton, property: components[j]) as! UIButton
-
-                    default:
-                        continue
-                    }
-                    incrementIndex(index: &j)
-                }
-                finalTagIndex = j
-                rootView.addSubview(uiButton)
-                setAnchors(rootView: rootView, childView: uiButton, anchors: anchors)
-                incrementIndexByIndex(indexI: &i, by: j)
-            default:
-                incrementIndex(index: &i)
-            }
-        }
-        return finalTagIndex
-    }
-
-    private func incrementIndex(index: inout Int) {
-        index += 1
-    }
-
-    private func incrementIndexByIndex(indexI: inout Int, by indexJ: Int) {
-        indexI = indexJ + 1
-    }
-
-    private func createBaseView() -> UIView {
-        UIView(frame: CGRect(
-            x: 0,
-            y: 0,
-            width: UIScreen.main.bounds.width,
-            height: UIScreen.main.bounds.height)
-        )
-    }
-}
-
-extension LayoutInTime {
-    private func setTextAligment(component: inout UILabel, property: String) {
-        switch property {
-        case "left":
-            component.textAlignment = NSTextAlignment(rawValue: 0)!
-        case "center":
-            component.textAlignment = NSTextAlignment(rawValue: 1)!
-        case "right":
-            component.textAlignment = NSTextAlignment(rawValue: 2)!
-        default:
-            break
-        }
-    }
-
-    private func setBackgroundColor(component: UIView, property: String) -> UIView {
-        switch property {
-        case "white":
-            component.backgroundColor = .white
-        case "black":
-            component.backgroundColor = .black
-        case "green":
-            component.backgroundColor = .green
-        case "red":
-            component.backgroundColor = .red
-        case "blue":
-            component.backgroundColor = .blue
-        case "brown":
-            component.backgroundColor = .brown
-        case "cyan":
-            component.backgroundColor = .cyan
-        case "darkGray":
-            component.backgroundColor = .darkGray
-        case "gray":
-            component.backgroundColor = .gray
-        case "systemPink":
-            component.backgroundColor = .systemPink
-        case "yellow":
-            component.backgroundColor = .yellow
-        case "purple":
-            component.backgroundColor = .purple
-        case "orange":
-            component.backgroundColor = .orange
-        default:
-            break
-        }
-
-        return component
-    }
-
-    private func setWidthHeight(property: String, isHeight: Bool) -> CGFloat {
-        if property.contains("%") {
-            return CGFloat(Double(
-                property.replacingOccurrences(of: "%", with: "")
-            ) ?? 0) / 100.0 * (isHeight ? UIScreen.main.bounds.height : UIScreen.main.bounds.width)
-        }
-        return CGFloat(Double(property) ?? 0)
-    }
-
-    private func setAnchors(rootView: UIView, childView: UIView, anchors: Anchors) {
-        if let topAnchorConstant = anchors.topAnchorConstant {
-            NSLayoutConstraint.activate([
-                childView.topAnchor.constraint(equalTo: rootView.topAnchor, constant: topAnchorConstant)
-            ])
-        }
-        if let leftAnchorConstant = anchors.leftAnchorConstant {
-            NSLayoutConstraint.activate([
-                childView.leftAnchor.constraint(equalTo: rootView.leftAnchor, constant: leftAnchorConstant)
-            ])
-        }
-        if let bottomAnchorConstant = anchors.bottomAnchorConstant {
-            NSLayoutConstraint.activate([
-                childView.bottomAnchor.constraint(equalTo: rootView.bottomAnchor, constant: bottomAnchorConstant)
-            ])
-        }
-        if let rightAnchorConstant = anchors.rightAnchorConstant {
-            NSLayoutConstraint.activate([
-                childView.rightAnchor.constraint(equalTo: rootView.rightAnchor, constant: rightAnchorConstant)
-            ])
-        }
-        if let height = anchors.height {
-            NSLayoutConstraint.activate([
-                childView.heightAnchor.constraint(equalToConstant: height)
-            ])
-        }
-        if let width = anchors.width {
-            NSLayoutConstraint.activate([
-                childView.widthAnchor.constraint(equalToConstant: width)
-            ])
-        }
-    }
-}
+\begin{lstlisting}[caption={Разметка XML--файла до внесения изменений}]
+<UIView
+    width="100%"
+    height="100%"
+    backgroundColor="white">
+    <UILabel
+        width="100%"
+        height="50"
+        topAnchor="400"
+        leftAnchor="0"
+        text="Привет!"
+        textAlignment="center">
+    </UILabel>
+    <UIView
+        leftAnchor="150"
+        rightAnchor="-150"
+        height="60"
+        topAnchor="450"
+        backgroundColor="red">
+        <UILabel
+            leftAnchor="0"
+            rightAnchor="0"
+            bottomAnchor="0"
+            topAnchor="0"
+            text="Hello!"
+            textAlignment="center">
+        </UILabel>
+    </UIView>
+</UIView>
 \end{lstlisting}
+
+По нажатию на сочетание клавиш CMD + t ноутбука, на котором запущено программное обеспечение, происходит обновление интерфейса. 
+Обновленная версия представлена на рисунке \ref{fig:example-after}.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.1]{img/example-after.png}
+	\caption{Интерфейс после внесения изменений}
+	\label{fig:example-after}
+\end{figure}
+
+\subsubsection{Тестирование}
+Разработанное программное обеспечение должно гарантировать корректное отображение задаваемых UI--элементов.
+Для этого было проведено snapshot--тестирование, в рамках которого эталонные скриншоты экрана сравниваются с актуальным скриншотами, которые получаются во время прогона тестов.
+В качестве эталонных скриншотов используются представления, сверстанные с помощью фреймворка UIKit.
+Для выполнения тестирования была использована библиотека SnapshotTesting, предоставляющая весь необходимый для создания snapshot--тестов функционал.
+
+В таблицах 2 --- 5 представлен набор тестов, а также результат их выполнения.
+Каждый тест предполагает наличие фонового UIView белого цвета.
+
+\begin{table}[!htb]
+ \label{table:tests1}
+ \begin{center}
+  \caption{Результаты snapshot--тестирования}
+ \begin{tabular}{|p{0.6cm}|p{10cm}|p{5cm}|}
+  \hline
+   \bfseries № & \bfseries Описание теста & \bfseries Результат \\ \hline
+   1 & UIView черного цвета, занимает верхнюю половину экрана & Тест пройден успешно  \\ \hline
+   2 & UIView красного цвета, занимает нижнюю половину экрана & Тест пройден успешно  \\ \hline
+   3 & UIView синего цвета, занимает левую половину экрана  & Тест пройден успешно  \\ \hline      
+   4 & UIView оранжевого цвета, занимает правую половину экрана  & Тест пройден успешно  \\ \hline
+   5 & UIView фиолетового цвета, ширина 20, высота 20, левая граница --- левая граница экрана, верхняя граница --- верхняя граница экрана & Тест пройден успешно  \\ \hline
+   6 & UIView зеленого цвета, ширина 20, высота 20, правая граница --- правая граница экрана, верхняя граница --- верхняя граница экрана & Тест пройден успешно  \\ \hline
+   7 & UIView серого цвета, занимает верхнюю половину экрана + UIView розового цвета, занимает нижнюю половину экрана & Тест пройден успешно  \\ \hline
+   8 & UIView серого цвета, занимает левую половину экрана + UIView розового цвета, занимает правую половину экрана & Тест пройден успешно  \\ \hline
+   9 & UILabel, цвет фона --- красный, текст --- <<Привет>>, отступ 100 от верхней границы экрана, отступ 100 от правой границы экрана, ширина и высота 100 & Тест пройден успешно  \\ \hline
+  \end{tabular}
+ \end{center}
+\end{table}
+
+\begin{table}[!htb]
+ \label{table:tests2}
+ \begin{center}
+  \caption{Результаты snapshot--тестирования --- продолжение}
+ \begin{tabular}{|p{0.6cm}|p{10cm}|p{5cm}|}
+  \hline
+   \bfseries № & \bfseries Описание теста & \bfseries Результат \\ \hline
+   10 & UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по правому краю, отступ 100 от верхней границы экрана, отступ 100 от правой границы экрана, ширина и высота 100 & Тест пройден успешно  \\ \hline
+   11 & UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по левому краю, отступ 100 от верхней границы экрана, отступ 100 от правой границы экрана, ширина и высота 100 & Тест пройден успешно  \\ \hline
+   13 & UIView оранжевого цвета, занимает правую половину экрана + дочерний UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по правому краю, отступ 100 от верхней границы UIView, отступ 100 от правой границы UIView, ширина и высота 100 & Тест пройден успешно  \\ \hline
+   14 & UIView оранжевого цвета, занимает правую половину экрана + дочерний UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по правому краю, отступ -100 от нижней границы UIView, отступ 100 от левой границы UIView, ширина и высота 100 & Тест пройден успешно  \\ \hline
+  \end{tabular}
+ \end{center}
+\end{table}
+
+\begin{table}[!htb]
+ \label{table:tests3}
+ \begin{center}
+  \caption{Результаты snapshot--тестирования --- продолжение}
+ \begin{tabular}{|p{0.6cm}|p{10cm}|p{5cm}|}
+  \hline
+   \bfseries № & \bfseries Описание теста & \bfseries Результат \\ \hline
+   15 & UIView оранжевого цвета, занимает правую половину экрана + дочерний UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по правому краю, отступ 100 от нижней границы UIView, отступ 100 от левой границы UIView, ширина и высота 100 & Тест пройден успешно  \\ \hline
+   16 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, 50\% экрана + дочерний UIView коричневого цвета, 25\% экрана  & Тест пройден успешно  \\ \hline   
+   17 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, 50\% экрана + дочерний UIView коричневого цвета, 25\% + дочерний UIView синего цвета, 12\% экрана  & Тест пройден успешно  \\ \hline
+   18 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, 50\% экрана + дочерний UIView коричневого цвета, 25\% + дочерний UIView синего цвета, 12\% экрана + дочерний UIView оранжевого цвета, 6\% экрана  & Тест пройден успешно  \\ \hline
+   19 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, отступ 100 от правой границы родителя, ширина и высота 100 и второй дочерний UIView коричневого цвета, отступ -100 от левой границы родителя, ширина и высота 100 & Тест пройден успешно  \\ \hline
+     \end{tabular}
+ \end{center}
+\end{table}
+
+\begin{table}[!htb]
+ \label{table:tests4}
+ \begin{center}
+  \caption{Результаты snapshot--тестирования --- продолжение}
+ \begin{tabular}{|p{0.6cm}|p{10cm}|p{5cm}|}
+  \hline
+   \bfseries № & \bfseries Описание теста & \bfseries Результат \\ \hline
+   20 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, отступ 100 от правой границы родителя, ширина и высота 50, второй дочерний UIView коричневого цвета, отступ -100 от левой границы родителя, ширина и высота 50, третий дочерний UIView зеленого цвета, отступ 10 от верхний границы родителя, ширина и высота 50 & Тест пройден успешно  \\ \hline
+   21 & UIView красного цвета, 75\% экрана + дочерний UIView зеленого цвета, отступ 100 от правой границы родителя, ширина и высота 50, второй дочерний UIView коричневого цвета, отступ -100 от левой границы родителя, ширина и высота 50, третий дочерний UIView зеленого цвета, отступ 10 от верхний границы родителя, ширина и высота 50 + дочерний UILabel, цвет фона --- красный, текст --- <<Привет>>, выравнивание текста по правому краю, отступ 10 от верхней границы родителя & Тест пройден успешно  \\ \hline  \end{tabular}
+ \end{center}
+\end{table}
 
 \subsection*{Вывод}
 
-В данном разделе был обоснован выбор средств программной реализации предлагаемого метода, описан формат входных и выходных данных, разработано программное обеспечение, реализующее представленный метод, и выполнено его тестирование.
+В данном разделе был обоснован выбор средств программной реализации предлагаемого метода, описан формат входных и выходных данных. 
+Разработано программное обеспечение, реализующее представленный метод, приведен пример работы программы, выполнено тестирование, а также описан способ обращения к программе.
 
 \pagebreak

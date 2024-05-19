@@ -3,32 +3,48 @@
     height="100%"
     backgroundColor="white">
     <UIView
-        width="50%"
-        height="50%"
-        rightAnchor="-50"
-        topAnchor="50"
-        backgroundColor="brown">
-    </UIView>
-    <UIView
-        width="50"
-        height="50"
-        rightAnchor="-50"
-        topAnchor="50"
-        backgroundColor="blue">
-    </UIView>
-</UIView>
-<UIView
-    width="50%"
-    height="50%"
-    leftAnchor="50"
-    topAnchor="50"
-    backgroundColor="green">
-    <UIView
-        width="50"
-        height="50"
-        rightAnchor="-50"
-        bottomAnchor="-50"
+        width="95%"
+        height="95%"
         backgroundColor="red">
+        <UIView
+            width="90%"
+            height="90%"
+            backgroundColor="green">
+            <UIView
+                width="85%"
+                height="85%"
+                backgroundColor="brown">
+                <UIView
+                    width="80%"
+                    height="80%"
+                    backgroundColor="purple">
+                    <UIView
+                        width="75%"
+                        height="75%"
+                        backgroundColor="orange">
+                        <UIView
+                            width="70%"
+                            height="70%"
+                            backgroundColor="systemPink">
+                            <UIView
+                                width="65%"
+                                height="65%"
+                                backgroundColor="gray">
+                                <UIView
+                                    width="60%"
+                                    height="60%"
+                                    backgroundColor="cyan">
+                                    <UIView
+                                        width="55%"
+                                        height="55%"
+                                        backgroundColor="blue">
+                                    </UIView>
+                                </UIView>
+                            </UIView>
+                        </UIView>
+                    </UIView>
+                </UIView>
+            </UIView>
+        </UIView>
     </UIView>
 </UIView>
-

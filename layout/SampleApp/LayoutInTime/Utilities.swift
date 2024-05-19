@@ -14,3 +14,35 @@ func overrideMethod(_ selectorA: Selector, of sourceClass: AnyClass, with select
     }
     method_exchangeImplementations(oldMethod, newMethod)
 }
+
+func benchmark<T>(_ block: () -> T) {
+    let startTime = CFAbsoluteTimeGetCurrent()
+    let result = block()
+    let endTime = CFAbsoluteTimeGetCurrent()
+    let elapsedTime = endTime - startTime
+    writeIntValueToFile(elapsedTime)
+}
+
+func writeIntValueToFile(_ value: CFAbsoluteTime) {
+    guard let lastIndex = #file.lastIndex(of: "/") else { return }
+
+    let firstTrimmedPath = String(#file.prefix(upTo: lastIndex)) + "/res.txt"
+
+    let fileURL = URL(fileURLWithPath: firstTrimmedPath)
+
+    do {
+        let fileHandle = try FileHandle(forWritingTo: fileURL)
+        fileHandle.seekToEndOfFile()
+
+        let stringValue = String(value) + "\n"
+        if let data = stringValue.data(using: .utf8) {
+            fileHandle.write(data)
+            print("Значение \(value) успешно записано в файл.")
+        }
+
+        fileHandle.closeFile()
+    } catch {
+        print("Ошибка записи в файл: \(error)")
+    }
+}
+

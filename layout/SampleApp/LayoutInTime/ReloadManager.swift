@@ -42,7 +42,9 @@ class ReloadManager {
 
     static func reload() {
         for observer in observers {
-            observer.reload()
+            benchmark {
+                observer.reload()
+            }
         }
     }
 }
