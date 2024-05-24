@@ -43,11 +43,12 @@
 \contentsline {subsection}{\numberline {3.3}Способ обращения к программе}{35}{subsection.3.3}%
 \contentsline {subsubsection}{\numberline {3.3.1}Пример работы}{36}{subsubsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.2}Тестирование}{38}{subsubsection.3.3.2}%
-\contentsline {section}{\numberline {4}Исследовательская часть}{44}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Технические характеристики}{44}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Постановка исследования}{44}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Средства расчета времени}{45}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Результаты исследования}{45}{subsection.4.4}%
-\contentsline {section}{ЗАКЛЮЧЕНИЕ}{49}{figure.caption.30}%
-\contentsline {section}{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}{50}{figure.caption.30}%
-\contentsline {section}{ПРИЛОЖЕНИЕ A}{57}{figure.caption.30}%
+\contentsline {section}{\numberline {4}Исследовательская часть}{40}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Технические характеристики}{40}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Постановка исследования}{40}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Средства расчета времени}{41}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Результаты исследования}{41}{subsection.4.4}%
+\contentsline {section}{ЗАКЛЮЧЕНИЕ}{45}{figure.caption.26}%
+\contentsline {section}{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}{46}{figure.caption.26}%
+\contentsline {section}{ПРИЛОЖЕНИЕ A}{53}{figure.caption.26}%
+\contentsline {section}{ПРИЛОЖЕНИЕ Б}{66}{lstnumber.11.276}%

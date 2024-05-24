@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.4.20)  19 MAY 2024 14:40
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.4.20)  25 MAY 2024 01:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -3545,19 +3545,10 @@ Overfull \hbox (4.64926pt too wide) in paragraph at lines 148--152
 о было проведено snapshot–
  []
 
-[38]
-Underfull \hbox (badness 1436) in paragraph at lines 168--168
-[]|\TU/TimesNewRoman(0)/m/n/14.4 UIView зеленого цвета, ширина 20, высота
- []
-
-) [39]
-
-LaTeX Warning: Text page 40 contains only floats.
-
-[40] [41] [42] [43]
+[38]) [39]
 \openout2 = `40-research.aux'.
 
- (./40-research.tex [44
+ (./40-research.tex [40
 
 
 
@@ -3572,7 +3563,7 @@ File: img/research9.png Graphic file (type bmp)
 <img/research9.png>
 File: img/research13.png Graphic file (type bmp)
 <img/research13.png>
- [45] [46]
+ [41] [42]
 ./40-research.tex:98: Undefined control sequence.
 <recently read> \multirow 
                           
@@ -3588,7 +3579,7 @@ File: img/chart1.png Graphic file (type bmp)
 <img/chart1.png>
 File: img/chart2.png Graphic file (type bmp)
 <img/chart2.png>
-[47]) [48]
+[43]) [44]
 \openout2 = `50-conclusion.aux'.
 
  (./50-conclusion.tex
@@ -3597,7 +3588,7 @@ Overfull \hbox (4.19325pt too wide) in paragraph at lines 12--13
 е представленный ме-
  []
 
-) [49
+) [45
 
 
 
@@ -3616,7 +3607,7 @@ Underfull \hbox (badness 3514) in paragraph at lines 37--39
  – Режим доступа:
  []
 
-[50
+[46
 
 
 
@@ -3668,7 +3659,7 @@ Underfull \hbox (badness 1902) in paragraph at lines 81--83
 . – Режим доступа:
  []
 
-[51]
+[47]
 Underfull \hbox (badness 10000) in paragraph at lines 89--91
 []\TU/TimesNewRoman(0)/m/n/14.4 React и альтернативы [Электронный ресурс]. – Ре
 жим доступа:
@@ -3710,7 +3701,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 117--119
 ide-software-developer-
  []
 
-[52]
+[48]
 Underfull \hbox (badness 10000) in paragraph at lines 125--127
 []\TU/TimesNewRoman(0)/m/n/14.4 Add to App | Flutter [Электронный ресурс]. – Ре
 жим доступа:
@@ -3764,7 +3755,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 157--159
 507485.pdf, свободный –
  []
 
-[53]
+[49]
 Underfull \hbox (badness 10000) in paragraph at lines 161--163
 []\TU/TimesNewRoman(0)/m/n/14.4 Performance and view hierarchies | App quality 
 | Android
@@ -3871,7 +3862,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 185--187
 mentation/swiftui/uikit-
  []
 
-[54]
+[50]
 Underfull \hbox (badness 1655) in paragraph at lines 189--191
 \TU/TimesNewRoman(0)/m/n/14.4 ступа: https://developer.apple.com/documentation/
 uikit/ uiview/1622621-frame,
@@ -3913,7 +3904,7 @@ Overfull \hbox (13.06903pt too wide) in paragraph at lines 213--215
 ntation/swiftui/observedobject,
  []
 
-[55]
+[51]
 Underfull \hbox (badness 4205) in paragraph at lines 221--223
 []\TU/TimesNewRoman(0)/m/n/14.4 XML | computer language [Электронный ресурс]. –
  Режим доступа:
@@ -3958,7 +3949,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 237--239
 rserreporters, свобод-
  []
 
-) [56]
+) [52]
 \openout2 = `70-application.aux'.
 
  (./70-application.tex
@@ -4400,7 +4391,7 @@ l.40
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[57
+[53
 
 
 
@@ -4837,7 +4828,7 @@ l.78
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[58]
+[54]
 
 ./70-application.tex:79: LaTeX Error: Undefined color `plain'.
 
@@ -5497,7 +5488,7 @@ l.117
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[59]
+[55]
 
 ./70-application.tex:118: LaTeX Error: Undefined color `plain'.
 
@@ -6230,7 +6221,7 @@ l.157
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[60]
+[56]
 
 ./70-application.tex:158: LaTeX Error: Undefined color `plain'.
 
@@ -6842,7 +6833,7 @@ l.194
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[61]
+[57]
 
 ./70-application.tex:196: LaTeX Error: Undefined color `plain'.
 
@@ -7247,7 +7238,7 @@ l.227
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[62]
+[58]
 
 ./70-application.tex:228: LaTeX Error: Undefined color `plain'.
 
@@ -7651,7 +7642,7 @@ l.260
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[63]
+[59]
 
 ./70-application.tex:262: LaTeX Error: Undefined color `plain'.
 
@@ -8076,7 +8067,7 @@ l.295
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[64]
+[60]
 
 ./70-application.tex:296: LaTeX Error: Undefined color `plain'.
 
@@ -8469,7 +8460,7 @@ l.327
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[65]
+[61]
 
 ./70-application.tex:328: LaTeX Error: Undefined color `plain'.
 
@@ -9051,7 +9042,7 @@ l.366
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[66]
+[62]
 
 ./70-application.tex:367: LaTeX Error: Undefined color `plain'.
 
@@ -10074,7 +10065,7 @@ l.404 ...ty.replacingOccurrences(of: "%", with: ""
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[67]
+[63]
 
 ./70-application.tex:405: LaTeX Error: Undefined color `plain'.
 
@@ -10491,7 +10482,7 @@ l.438
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[68]
+[64]
 
 ./70-application.tex:439: LaTeX Error: Undefined color `plain'.
 
@@ -10540,7 +10531,15 @@ l.442 }
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-) [69] 
+[65]
+Underfull \hbox (badness 1436) in paragraph at lines 462--462
+[]|\TU/TimesNewRoman(0)/m/n/14.4 UIView зеленого цвета, ширина 20, высота
+ []
+
+
+LaTeX Warning: Float too large for page by 11.16402pt on input line 484.
+
+) [66] [67] [68] [69] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (./main.aux (./00-title.aux) (./01-abstract.aux) (./02-naming.aux)
 (./03-intro.aux) (./10-analysis.aux) (./20-design.aux) (./30-technology.aux)
@@ -10551,7 +10550,7 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: FFD6F31210FE77EFD174F6870F70F52A;9706.
+(rerunfilecheck)             Checksum: 6615129FE96B09504A387D3C83105336;9853.
  ) 
 Here is how much of TeX's memory you used:
  22220 strings out of 474773
@@ -10560,6 +10559,6 @@ Here is how much of TeX's memory you used:
  43896 multiletter control sequences out of 15000+600000
  566816 words of font info for 119 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 86i,12n,98p,592b,1159s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 86i,12n,98p,593b,1159s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on main.pdf (66 pages).
