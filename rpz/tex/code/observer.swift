@@ -1,0 +1,1 @@
+ReloadManager.addObserver(self)

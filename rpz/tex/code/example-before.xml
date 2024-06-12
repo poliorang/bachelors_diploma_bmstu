@@ -1,0 +1,12 @@
+<UIView
+    width="100%"
+    height="100%"
+    backgroundColor="white">
+    <UILabel
+        width="100%"
+        height="50"
+        topAnchor="400"
+        leftAnchor="0"
+        text="Привет!">
+    </UILabel>
+</UIView>
